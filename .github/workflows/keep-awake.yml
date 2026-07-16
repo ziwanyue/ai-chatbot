@@ -1,0 +1,16 @@
+name: Keep Render Awake
+
+on:
+  schedule:
+    # 每 5 分钟执行一次
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  wake-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake up Render
+        run: |
+          curl -s https://ai-chatbot-wald.onrender.com > /dev/null
+          echo "Wake up call sent at $(date)"

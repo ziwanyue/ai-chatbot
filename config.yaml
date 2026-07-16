@@ -1,0 +1,32 @@
+character: default
+llm:
+  ollama:
+    base_url: http://localhost:11434
+    max_tokens: 2048
+    model: qwen2.5:7b
+    temperature: 0.8
+  openai_compatible:
+    api_key: 'sk-ws-H.EDLDMLM.ZY9d.MEQCIFUzxqpOtIhc_2S9e590idRHwfEQ_z_scDYzBZI9s1dNAiBsR7y7hl2Gck9i307pRGqqWkDX58ETUQIGveGI0g2jfQ'
+    base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    max_tokens: 4096
+    model: qwen3.5-plus
+    temperature: 0.8
+  provider: openai_compatible
+memory:
+  max_history: 50
+  summary: false
+server:
+  host: 0.0.0.0
+  port: 8000
+tts:
+  enabled: true
+  voice: zh-CN-XiaoxiaoNeural
+  rate: "-10%"
+  pitch: "-2Hz"
+  volume: "+5%"
+wechat:
+  enabled: false
+  mode: native
+  gewechat:
+    api_url: http://localhost:2531
+    token: ''

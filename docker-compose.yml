@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  chatbot:
+    build: .
+    container_name: ai-chatbot
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./characters:/app/characters
+      - ./config.yaml:/app/config.yaml
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai

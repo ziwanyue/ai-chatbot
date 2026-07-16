@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}系统设置{% endblock %}
+{% block content %}
+<h2 style="font-size:20px;margin-bottom:16px;">⚙️ 系统设置</h2>
+
+<form method="POST" action="/settings">
+    <div class="card">
+        <div class="card-title">LLM 提供商配置</div>
+
+        <div class="form-group">
+            <label>提供商类型</label>
+            <select name="llm_provider">
+                <option value="openai_compatible" {% if config.llm.provider == 'openai_compatible' %}selected{% endif %}>OpenAI 兼容 API</option>
+                <option value="ollama" {% if config.llm.provider == 'ollama' %}selected{% endif %}>Ollama 本地模型</option>
+            </select>
+        </div>
+
+        <div id="openaiConfig">
+            <div class="form-group">
+                <label>API Key</label>
+                <input type="text" name="openai_api_key" value="{{ config.llm.openai_compatible.api_key }}" placeholder="sk-xxx">
+            </div>
+            <div class="form-group">
+                <label>API 地址</label>
+                <input type="url" name="openai_base_url" value="{{ config.llm.openai_compatible.base_url }}" placeholder="https://api.deepseek.com">
+                <div style="font-size:12px;color:#888;margin-top:4px;">
+                    常用：DeepSeek https://api.deepseek.com | 千问 https://dashscope.aliyuncs.com/compatible-mode/v1 | 硅基流动 https://api.siliconflow.cn/v1
+                </div>
+            </div>
+            <div class="form-group">
+                <label>模型名</label>
+                <input type="text" name="openai_model" value="{{ config.llm.openai_compatible.model }}" placeholder="deepseek-chat">
+                <div style="font-size:12px;color:#888;margin-top:4px;">
+                    常用：DeepSeek: deepseek-chat | 千问: qwen-max | 硅基流动: Qwen/Qwen2.5-7B-Instruct
+                </div>
+            </div>
+        </div>
+
+        <div id="ollamaConfig" style="display:none;">
+            <div class="form-group">
+                <label>Ollama 地址</label>
+                <input type="url" name="ollama_base_url" value="{{ config.llm.ollama.base_url }}" placeholder="http://localhost:11434">
+            </div>
+            <div class="form-group">
+                <label>模型名</label>
+                <input type="text" name="ollama_model" value="{{ config.llm.ollama.model }}" placeholder="qwen2.5:7b">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col form-group">
+                <label>温度 (Temperature)</label>
+                <input type="text" name="temperature" value="{{ config.llm.openai_compatible.temperature }}">
+            </div>
+            <div class="col form-group">
+                <label>最大 Token</label>
+                <input type="text" name="max_tokens" value="{{ config.llm.openai_compatible.max_tokens }}">
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">微信配置</div>
+        <div class="form-group">
+            <label>启用微信</label>
+            <select name="wechat_enabled">
+                <option value="true" {% if config.wechat.enabled %}selected{% endif %}>启用</option>
+                <option value="false" {% if not config.wechat.enabled %}selected{% endif %}>禁用</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>OpenClaw API 地址</label>
+            <input type="text" name="wechat_api_url" value="{% if config.wechat.mode == 'gewechat' %}{{ config.wechat.gewechat.api_url }}{% endif %}" placeholder="http://localhost:2531">
+            <div style="font-size:12px;color:#888;margin-top:4px;">运行 OpenClaw 微信服务后的 API 地址</div>
+        </div>
+        <div class="form-group">
+            <label>Token（可选）</label>
+            <input type="text" name="wechat_token" value="{% if config.wechat.mode == 'gewechat' %}{{ config.wechat.gewechat.token }}{% endif %}">
+        </div>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;">
+        <button type="submit" class="btn btn-primary" style="padding:12px 48px;font-size:16px;">保存配置</button>
+    </div>
+</form>
+
+<script>
+    const providerSelect = document.querySelector('select[name="llm_provider"]');
+    function toggleProvider() {
+        const v = providerSelect.value;
+        document.getElementById('openaiConfig').style.display = v === 'openai_compatible' ? 'block' : 'none';
+        document.getElementById('ollamaConfig').style.display = v === 'ollama' ? 'block' : 'none';
+    }
+    providerSelect.addEventListener('change', toggleProvider);
+    toggleProvider();
+</script>
+{% endblock %}

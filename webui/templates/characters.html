@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}角色管理{% endblock %}
+{% block content %}
+<div class="row" style="margin-bottom:16px;">
+    <div class="col"><h2 style="font-size:20px;">🎭 角色管理</h2></div>
+    <div style="text-align:right;"><button class="btn btn-primary" onclick="showCreate()">+ 新建角色</button></div>
+</div>
+
+{% for char in characters %}
+<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:start;">
+        <div>
+            <h3 style="font-size:16px;margin-bottom:4px;">{{ char.name }}</h3>
+            <p style="font-size:13px;color:#888;margin-bottom:8px;">{{ char.description }}</p>
+        </div>
+        <div>
+            <button class="btn btn-outline btn-sm" onclick="editCharacter('{{ char.name }}')">编辑</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteCharacter('{{ char.name }}')">删除</button>
+        </div>
+    </div>
+    {% if char.greeting %}
+    <div style="font-size:12px;color:#999;margin-top:4px;">💬 开场白：{{ char.greeting[:60] }}{% if char.greeting|length > 60 %}...{% endif %}</div>
+    {% endif %}
+    {% if char.temperature %}<span class="tag">温度: {{ char.temperature }}</span>{% endif %}
+    {% if char.model %}<span class="tag">模型: {{ char.model }}</span>{% endif %}
+</div>
+{% else %}
+<div class="empty">
+    <div style="font-size:40px;">🎭</div>
+    <p>还没有角色，点击上方按钮创建第一个角色吧！</p>
+</div>
+{% endfor %}
+
+<!-- 创建/编辑角色弹窗 -->
+<div id="charModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:24px;width:90%;max-width:560px;max-height:85vh;overflow-y:auto;">
+        <h3 id="modalTitle" style="margin-bottom:16px;">新建角色</h3>
+        <form id="charForm" onsubmit="saveCharacter(event)">
+            <input type="hidden" id="origName">
+            <div class="form-group">
+                <label>角色名称 *</label>
+                <input type="text" id="charName" required placeholder="例如：小樱">
+            </div>
+            <div class="form-group">
+                <label>角色描述</label>
+                <input type="text" id="charDesc" placeholder="简短描述这个角色">
+            </div>
+            <div class="form-group">
+                <label>系统提示词（角色设定核心）*</label>
+                <textarea id="charPrompt" required rows="8" placeholder="详细描述角色的性格、说话风格、背景故事..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>开场白（首次对话时自动发送）</label>
+                <input type="text" id="charGreeting" placeholder="例如：主人~想你了！">
+            </div>
+            <div class="row">
+                <div class="col form-group">
+                    <label>温度 (0-2, 越高越有创意)</label>
+                    <input type="text" id="charTemp" placeholder="0.8" style="width:100%;">
+                </div>
+                <div class="col form-group">
+                    <label>指定模型（可选）</label>
+                    <input type="text" id="charModel" placeholder="留空则使用默认模型" style="width:100%;">
+                </div>
+            </div>
+            <div style="text-align:right;margin-top:16px;">
+                <button type="button" class="btn btn-outline" onclick="closeModal()" style="margin-right:8px;">取消</button>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function showCreate() {
+        document.getElementById('modalTitle').textContent = '新建角色';
+        document.getElementById('charForm').reset();
+        document.getElementById('origName').value = '';
+        document.getElementById('charModal').style.display = 'flex';
+    }
+
+    function editCharacter(name) {
+        fetch('/api/characters/' + encodeURIComponent(name))
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('modalTitle').textContent = '编辑角色';
+                document.getElementById('origName').value = data.name;
+                document.getElementById('charName').value = data.name;
+                document.getElementById('charDesc').value = data.description || '';
+                document.getElementById('charPrompt').value = data.prompt;
+                document.getElementById('charGreeting').value = data.greeting || '';
+                document.getElementById('charTemp').value = data.temperature || '';
+                document.getElementById('charModel').value = data.model || '';
+                document.getElementById('charModal').style.display = 'flex';
+            });
+    }
+
+    function deleteCharacter(name) {
+        if (!confirm('确定删除角色「' + name + '」？')) return;
+        fetch('/api/characters/' + encodeURIComponent(name), {method: 'DELETE'})
+            .then(r => r.json())
+            .then(d => { if (d.status === 'ok') window.location.reload(); });
+    }
+
+    function saveCharacter(e) {
+        e.preventDefault();
+        const data = {
+            name: document.getElementById('charName').value.trim(),
+            description: document.getElementById('charDesc').value.trim(),
+            prompt: document.getElementById('charPrompt').value.trim(),
+            greeting: document.getElementById('charGreeting').value.trim(),
+            temperature: parseFloat(document.getElementById('charTemp').value) || undefined,
+            model: document.getElementById('charModel').value.trim() || undefined,
+        };
+        const orig = document.getElementById('origName').value;
+        if (orig && orig !== data.name) data.orig_name = orig;
+
+        fetch('/api/characters', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data),
+        })
+        .then(r => r.json())
+        .then(d => {
+            if (d.status === 'ok') window.location.reload();
+            else alert('保存失败：' + (d.error || '未知错误'));
+        });
+    }
+
+    function closeModal() {
+        document.getElementById('charModal').style.display = 'none';
+    }
+
+    document.getElementById('charModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+</script>
+{% endblock %}

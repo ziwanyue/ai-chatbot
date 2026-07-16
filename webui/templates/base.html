@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI ChatBot - {% block title %}首页{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #333; min-height: 100vh; }
+        .nav { background: #fff; border-bottom: 1px solid #e8e8e8; padding: 0 24px; display: flex; align-items: center; height: 56px; position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        .nav-title { font-size: 18px; font-weight: 600; color: #1a73e8; margin-right: 32px; }
+        .nav a { color: #555; text-decoration: none; padding: 16px 12px; font-size: 14px; transition: color .2s; }
+        .nav a:hover, .nav a.active { color: #1a73e8; }
+        .nav a.active { border-bottom: 2px solid #1a73e8; }
+        .container { max-width: 960px; margin: 0 auto; padding: 76px 16px 24px; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.08); padding: 20px; margin-bottom: 16px; }
+        .card-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+        .btn { display: inline-block; padding: 8px 20px; border-radius: 8px; font-size: 14px; border: none; cursor: pointer; transition: all .2s; text-decoration: none; }
+        .btn-primary { background: #1a73e8; color: #fff; }
+        .btn-primary:hover { background: #1557b0; }
+        .btn-danger { background: #e74c3c; color: #fff; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-sm { padding: 4px 12px; font-size: 12px; }
+        .btn-outline { background: transparent; border: 1px solid #d0d0d0; color: #555; }
+        .btn-outline:hover { border-color: #1a73e8; color: #1a73e8; }
+        input[type="text"], input[type="url"], textarea, select { width: 100%; padding: 10px 12px; border: 1px solid #d0d0d0; border-radius: 8px; font-size: 14px; transition: border .2s; font-family: inherit; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,.15); }
+        textarea { resize: vertical; min-height: 120px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; color: #555; }
+        .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; background: #e8f0fe; color: #1a73e8; margin: 2px; }
+        .empty { text-align: center; padding: 40px; color: #999; }
+        .empty p { margin-top: 8px; font-size: 14px; }
+        .flash-msg { padding: 10px 16px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
+        .flash-success { background: #e6f7e6; color: #1e7e34; }
+        .flash-error { background: #fde8e8; color: #c0392b; }
+        .row { display: flex; gap: 16px; }
+        .col { flex: 1; }
+        @media (max-width: 640px) { .row { flex-direction: column; } }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="nav">
+        <span class="nav-title">🤖 AI ChatBot</span>
+        <a href="/" class="{% if request.url.path == '/' %}active{% endif %}">聊天</a>
+        <a href="/characters" class="{% if request.url.path.startswith('/characters') %}active{% endif %}">角色管理</a>
+        <a href="/settings" class="{% if request.url.path == '/settings' %}active{% endif %}">设置</a>
+    </nav>
+    <div class="container">
+        {% if flash %}
+        <div class="flash-msg flash-{{ flash.type }}">{{ flash.msg }}</div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

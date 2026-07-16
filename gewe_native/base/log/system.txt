@@ -1,0 +1,17 @@
+{"level":"info","msg":"==== Run Status ====","time":"2025-04-11 10:59:08"}
+{"level":"info","msg":"LongPort：5600","time":"2025-04-11 10:59:08"}
+{"level":"info","msg":"Redis Status：PONG","time":"2025-04-11 10:59:08"}
+{"level":"info","msg":"etcd 启动失败：no etcd host","time":"2025-04-11 10:59:08"}
+{"level":"info","msg":"服务加载中....","time":"2025-04-11 10:59:08"}
+{"level":"info","msg":"服务加载完毕","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"==== Run Status ====","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"WebPort：4600","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"RunMode：Release","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"UpdateTime：2025-03-02-05:24","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"Forward：0","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"LoginLinit：2","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"Redis Status：PONG","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"etcd 启动失败：no etcd host","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"==== Contact Info ====","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"SDK_Version_8056","time":"2025-04-11 10:59:14"}
+{"level":"info","msg":"More_Devices_Yes","time":"2025-04-11 10:59:14"}
